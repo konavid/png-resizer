@@ -1,0 +1,68 @@
+# PNG Print Pack Resizer MVP
+
+단일 PNG 원본 이미지를 업로드하면, 선택한 인쇄 비율 팩(Print Pack)에 맞춰 여러 출력 사이즈의 PNG 파일을 자동 생성하고 하나의 ZIP 파일로 다운로드할 수 있게 해주는 개인용 웹 애플리케이션입니다.
+
+## 🚀 핵심 기능
+
+- **브라우저 기반 처리**: 서버 업로드 없이 100% 클라이언트(브라우저) 환경에서 Canvas API를 이용해 이미지를 안전하고 빠르게 리사이즈합니다.
+- **다양한 출력 팩 지원**: Etsy 프린터블, 월아트 등에서 자주 사용하는 표준 인쇄 비율(2:3, 3:4, 4:5, ISO)을 기본으로 제공합니다.
+- **고품질 중앙 크롭(Center Crop)**: 원본 비율과 타겟 비율이 다를 경우 이미지의 중앙을 기준으로 크롭한 뒤, 300 DPI 기준의 고화질 픽셀로 스케일링을 수행합니다.
+- **일괄 다운로드**: 여러 장의 리사이즈된 이미지를 일관된 파일명 규칙과 함께 하나의 ZIP 파일로 묶어서 다운로드합니다. (JSZip 사용)
+- **프리미엄 UI/UX**: Tailwind CSS v4를 활용하여 다크 모드를 완벽 지원하는 깔끔하고 직관적인 단일 페이지(Single Page) 인터페이스를 제공합니다.
+
+## 🛠 기술 스택
+
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Icons**: Lucide React
+- **Core Library**: JSZip (ZIP 파일 생성), Canvas API (리사이즈)
+
+## 📦 지원하는 출력 팩 (300 DPI 기준)
+
+| 팩 이름 | 비율 | 지원 사이즈 |
+| --- | --- | --- |
+| **2:3 Pack** | 2:3 | 20×30 인치 (6000×9000 px) |
+| **4:5 Pack** | 4:5 | 16×20 인치 (4800×6000 px) |
+| **3:4 Pack** | 3:4 | 18×24 인치 (5400×7200 px) |
+| **ISO Pack** | ISO | A2 (4961×7016 px) |
+| **11x14 Pack** | 11:14 | 11×14 인치 (3300×4200 px) |
+
+## 📁 파일명 규칙
+
+다운로드되는 ZIP 파일 내부의 이미지는 다음과 같은 규칙으로 생성됩니다.
+`{prefix}_{ratio}_{sizeLabel}_{widthPx}x{heightPx}.png`
+
+*(예시: `myart_2x3_8x12_2400x3600.png`)*
+
+## 🏗 프로젝트 구조
+
+```text
+app/
+├── components/
+│   ├── PngResizer.tsx      # 메인 상태 관리 및 UI 통합 컴포넌트
+│   ├── UploadZone.tsx      # 파일 업로드 (Drag & Drop), 미리보기 및 해상도 추출
+│   ├── PackSelector.tsx    # 출력 팩 선택, 파일명 Prefix 설정 및 파일 목록 미리보기
+│   └── GenerateSection.tsx # 이미지 생성(Canvas), 진행 상태 표시 및 ZIP 다운로드
+├── lib/
+│   ├── packs.ts            # 인쇄 비율 팩 및 픽셀 데이터 정의
+│   ├── resizer.ts          # Canvas API를 활용한 리사이즈(Center Crop) 핵심 로직
+│   └── zip.ts              # JSZip을 이용한 이미지 압축 및 다운로드 로직
+├── globals.css             # Tailwind CSS 설정 및 디자인 토큰
+├── layout.tsx              # 전역 레이아웃 및 메타데이터 (Inter 폰트 적용)
+└── page.tsx                # 메인 진입점
+```
+
+## 💻 실행 방법
+
+### 패키지 설치
+```bash
+npm install
+```
+
+### 개발 서버 실행
+```bash
+npm run dev
+```
+
+브라우저에서 [http://localhost:3000](http://localhost:3000) 주소로 접속하여 앱을 사용할 수 있습니다.
